@@ -1,10 +1,10 @@
 from app.models import db, Posts
 
 """Teste para criar tags"""
-def test_add_tag(client):
+def test_add_tag(client, auth_headers):
     response = client.post('/tags/', json = {
         'name': ['Tag 1', 'Tag 2']
-    })
+    }, headers = auth_headers)
 
     assert response.status_code == 201
     data = response.get_json()
@@ -13,14 +13,14 @@ def test_add_tag(client):
 
 
 """Teste para associar tag ao post"""
-def test_add_tag_post(client):
+def test_add_tag_post(client, auth_headers):
     post = Posts(title="Test Post", content="Content for testing")
     db.session.add(post)
     db.session.commit()
 
     respose = client.put('/tags/post/1', json = {
         'tag_id': 1
-    })
+    }, headers = auth_headers)
 
     assert respose.status_code == 201
     data = respose.get_json()
@@ -50,18 +50,18 @@ def test_read_specific_tag(client):
 
 
 """Teste para autualizar tag"""
-def test_update_tag(client):
+def test_update_tag(client, auth_headers):
     response = client.put('/tags/1',json = {
         'name': 'Tag 3'
-    })
+    }, headers = auth_headers)
 
     assert response.status_code == 200
     data = response.get_json()
     assert data['message'] == 'tag atualizada'
 
 """Teste para apagar uma tag"""
-def test_delete_tag(client):
-    response = client.delete('/tags/1')
+def test_delete_tag(client, auth_headers):
+    response = client.delete('/tags/1', headers = auth_headers)
 
     assert response.status_code == 200
     data = response.get_json()

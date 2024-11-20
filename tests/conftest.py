@@ -25,7 +25,7 @@ def auth_headers(client):
     user_existing = Users.query.filter_by(email = 'teste@test.com').first()
 
     if not user_existing:
-        client.post('/users', json={
+        client.post('/users/', json={
             'username': 'testuser',
             'password': 'testpassword',
             'name': 'teste',
@@ -34,7 +34,7 @@ def auth_headers(client):
         })
 
     # Fazer login e capturar o token
-    response = client.post('/login', json={
+    response = client.post('/users/login', json={
         'username': 'testuser',
         'password': 'testpassword'
     })

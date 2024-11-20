@@ -1,10 +1,10 @@
 from app.models import db, Posts
 
 """Teste para criar categoria"""
-def test_add_category(client):
+def test_add_category(client, auth_headers):
     response = client.post('/categories/', json = {
         'name': ['Categoria 1', 'Categoria 2']
-    })
+    }, headers = auth_headers)
 
     assert response.status_code == 201
     data = response.get_json()
@@ -12,14 +12,14 @@ def test_add_category(client):
 
 
 """Teste para associar categoria ao post"""
-def test_add_category_post(client):
+def test_add_category_post(client, auth_headers):
     post = Posts(title="Test Post", content="Content for testing")
     db.session.add(post)
     db.session.commit()
 
     respose = client.put('/categories/post/1', json = {
         'category_id': 1
-    })
+    }, headers = auth_headers)
 
     assert respose.status_code == 201
     data = respose.get_json()
@@ -49,18 +49,18 @@ def test_read_specific_category(client):
 
 
 """Teste para autualizar categoria"""
-def test_update_category(client):
+def test_update_category(client, auth_headers):
     response = client.put('/categories/1',json = {
         'name': 'Categoria 2'
-    })
+    }, headers = auth_headers)
 
     assert response.status_code == 200
     data = response.get_json()
     assert data['message'] == 'categoria atualizada'
 
 """Teste para apagar uma categoria"""
-def test_delete_category(client):
-    response = client.delete('/categories/1')
+def test_delete_category(client, auth_headers):
+    response = client.delete('/categories/1', headers = auth_headers)
 
     assert response.status_code == 200
     data = response.get_json()

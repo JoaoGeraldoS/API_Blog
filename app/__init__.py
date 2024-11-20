@@ -4,9 +4,11 @@ from app.routes import posts, users, categories, tags, comments
 from flask_restx import Api
 from app.serializer import ma
 from flask_jwt_extended import JWTManager
+from app.config import DevelopmentConfig
+from flask_migrate import Migrate
 
 
-def create_app(config_class = None):
+def create_app(config_class = DevelopmentConfig()):
 
     app = Flask(__name__)
     if config_class:
@@ -18,11 +20,14 @@ def create_app(config_class = None):
     api.add_namespace(posts.api, path='/posts')
     api.add_namespace(categories.api, path='/categories')
     api.add_namespace(tags.api, path='/tags')
+    api.add_namespace(users.api, path='/users')
+    api.add_namespace(comments.api, path='/comments')
 
 
     db.init_app(app)
     ma.init_app(app)
     jwt = JWTManager(app)
+    Migrate(app, db)
 
     
 
